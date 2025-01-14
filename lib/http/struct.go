@@ -1,8 +1,8 @@
 package http
 
 const (
-	Post = "Post"
-	Get  = "Get"
+	Post = "POST"
+	Get  = "GET"
 )
 
 type HttpRespone struct {
