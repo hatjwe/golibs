@@ -35,7 +35,7 @@ func (s *RequestInterface) HttpPostRequest(body *strings.Reader) HttpRespone {
 		s.Request.Error = errors.New("url为空，请检查请求是否设置url")
 		return s.Request
 	}
-	return s.Https(Post, s.Url, s.Body)
+	return s.Https(Post, s.Url, body)
 
 }
 func (s *RequestInterface) HttpGetRequest() HttpRespone {
