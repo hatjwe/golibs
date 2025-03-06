@@ -11,12 +11,14 @@ import (
 )
 
 type RequestInterface struct {
-	Url     string            `json:"url"`
-	Request HttpRespone       `json:"request"`
-	Body    *strings.Reader   `json:"body"`
-	Headers map[string]string `json:"headers"` // 存储请求头
-	Timeout time.Duration     // 全局超时时间
-	Proxy   string            // 上游代理地址
+	Url       string              `json:"url"`
+	Request   HttpRespone         `json:"request"`
+	Body      *strings.Reader     `json:"body"`
+	Headers   map[string]string   `json:"headers"` // 存储请求头
+	Timeout   time.Duration       // 全局超时时间
+	Proxy     string              // 上游代理地址
+	ReqHeader map[string][]string //请求的header头
+
 }
 
 // 设置跳过证书验证
@@ -30,6 +32,10 @@ func (s *RequestInterface) SetInsecureSkipVerify() {
 }
 func (s *RequestInterface) SetRequestUrl(url string) {
 	s.Url = url
+
+}
+func (s *RequestInterface) getAllHeader() map[string][]string {
+	return s.ReqHeader
 
 }
 
@@ -102,6 +108,8 @@ func (s *RequestInterface) Https(method, url string, body *strings.Reader) HttpR
 		request.Header.Set(key, value)
 	}
 
+	// 获取完整的请求信息
+
 	response, err := client.Do(request)
 	if response != nil {
 		Requset.StatusCode = response.StatusCode
@@ -112,11 +120,18 @@ func (s *RequestInterface) Https(method, url string, body *strings.Reader) HttpR
 	}
 
 	defer response.Body.Close()
+	// 获取完整的响应信息
+
 	bodystr, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		Requset.Error = err
 		return Requset
 	}
 	Requset.Body = string(bodystr)
+
+	s.ReqHeader = make(map[string][]string) // 初始化 map
+	for key, values := range request.Header {
+		s.ReqHeader[key] = values
+	}
 	return Requset
 }
