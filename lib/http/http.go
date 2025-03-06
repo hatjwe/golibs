@@ -34,7 +34,7 @@ func (s *RequestInterface) SetRequestUrl(url string) {
 	s.Url = url
 
 }
-func (s *RequestInterface) getAllHeader() map[string][]string {
+func (s *RequestInterface) GetAllHeader() map[string][]string {
 	return s.ReqHeader
 
 }
